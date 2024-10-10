@@ -3,6 +3,17 @@ package Controller;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+// Importing Object Mapper
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+//Importing Json Processing Exception 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+// Importing essentional class model
+import Model.Account;
+import Model.Message;
+
+
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
@@ -17,7 +28,7 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
-
+        app.post("/register", this::postAccontHandler);    
         return app;
     }
 
@@ -27,6 +38,20 @@ public class SocialMediaController {
      */
     private void exampleHandler(Context context) {
         context.json("sample text");
+    }
+
+
+    /**
+     * Handler to post new Account - End point for new account registration
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
+    private void postAccontHandler(Context context) {
+        
+        //ObjectMapper mapper = new ObjectMapper();
+        //Account account = mapper.readValue(context.body(), Account.class);
+        
+
     }
 
 
