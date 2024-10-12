@@ -91,7 +91,7 @@ public class MessageDAO {
 
             //write preparedStatement's setInt method here.
             preparedStatement.setInt(1, message_id);
-            ResultSet rs = preparedStatement.executeQuery();
+            preparedStatement.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
@@ -107,10 +107,34 @@ public class MessageDAO {
             //write preparedStatement's setInt method here.
             preparedStatement.setString(1, message_text);
             preparedStatement.setInt(2, message_id);
-            ResultSet rs = preparedStatement.executeQuery();
+            
+            // For update statement, executeUpdate() needs to be used
+            // instead of executeQuery()
+            preparedStatement.executeUpdate();
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
+    }
+    public List<Message> getAllMessagesByAccountId(int account_id) {
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> messages = new ArrayList<>();
+        try {
+            //Write SQL logic here
+            String sql = "SELECT * FROM message WHERE posted_by = ?;";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, account_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Message message = new Message(rs.getInt("message_id"),
+                        rs.getInt("posted_by"),
+                        rs.getString("message_text"),
+                        rs.getLong("time_posted_epoch"));
+                messages.add(message);
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return messages;
     }
 
 }

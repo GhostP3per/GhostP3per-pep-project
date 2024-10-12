@@ -40,8 +40,9 @@ public class SocialMediaController {
         app.post("/messages", this::postMessageHandler);
         app.get("/messages", this::getMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
-        app.delete("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByIdHandler);
         app.patch("messages/{message_id}", this::updateMessageByIdHandler);
+        app.get("accounts/{account_id}/messages", this::getAllMessagesByAccountIdHandler);
         return app;
     }
 
@@ -150,30 +151,24 @@ public class SocialMediaController {
     }
     private void updateMessageByIdHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
-        String message_text = mapper.readValue(context.body(), String.class);
+        Message message = mapper.readValue(context.body(), Message.class);
         int message_id = Integer.parseInt(context.pathParam("message_id"));
+        Message messagefromDatabase = messageService.getMessageById(message_id);
         
-        if ((message_text.length() < 0) && (message_text.length() > 255)) {
+        
+        if ((message.getMessage_text().isEmpty()) || (message.getMessage_text().length() > 255) || (messagefromDatabase == null)) {
             context.status(400);
         }
         else {
-            Message messagefromDatabase = messageService.getMessageById(message_id);
-            if (messagefromDatabase != null) {
-                messageService.updateMessageById(message_id, message_text);
+                messageService.updateMessageById(message_id, message.getMessage_text());
                 Message newUpdatedMessage = messageService.getMessageById(message_id);
-                context.json(mapper.writeValueAsString(newUpdatedMessage));
-            }
-            else {
-                context.status(400);
-            }    
+                context.json(mapper.writeValueAsString(newUpdatedMessage));  
         }
         
     }
-
-    
-    
-
-
-
-
+    private void getAllMessagesByAccountIdHandler(Context context) throws JsonProcessingException {
+        int account_id = Integer.parseInt(context.pathParam("account_id"));
+        List<Message> messages = messageService.getAllMessagesByAccountId(account_id);
+        context.json(messages);
+    }
 }
