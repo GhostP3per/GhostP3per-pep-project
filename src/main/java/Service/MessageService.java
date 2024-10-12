@@ -33,4 +33,9 @@ public class MessageService {
     public void deleteMesssageById(int message_id) {
         messageDAO.deleteMesssageById(message_id);
     }
+
+    public Message updateMessageById(int message_id, String message_text) {
+        messageDAO.updateMesssageById(message_id, message_text);
+        return messageDAO.getMesssageById(message_id);
+    }
 }
