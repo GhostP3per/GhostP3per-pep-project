@@ -2,7 +2,7 @@ package Controller;
 
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
+import java.util.List;
 // Importing Object Mapper
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 // Importing essentional class model
 import Model.Account;
 import Model.Message;
+import Service.AccountService;
+import Service.MessageService;
 
 
 /**
@@ -20,6 +22,12 @@ import Model.Message;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    AccountService accountService;
+    MessageService messageService;
+    public SocialMediaController() {
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -27,8 +35,10 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.get("example-endpoint", this::exampleHandler);
-        app.post("/register", this::postAccontHandler);    
+        app.post("/register", this::postAccountHandler);    
+        app.post("/login", this::postAccountLogInHandler);
+        app.post("/messages", this::postMessageHandler);
+        app.get("messages", this::getMessagesHandler);
         return app;
     }
 
@@ -42,17 +52,77 @@ public class SocialMediaController {
 
 
     /**
-     * Handler to post new Account - End point for new account registration
+     * Handler to register new Account - End point for new account registration
      * 
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
-    private void postAccontHandler(Context context) {
+    private void postAccountHandler(Context context) throws JsonProcessingException {
         
-        //ObjectMapper mapper = new ObjectMapper();
-        //Account account = mapper.readValue(context.body(), Account.class);
-        
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(context.body(), Account.class);
+        Account registeredAccount = accountService.insertAccount(account);
 
+        if (registeredAccount != null) {
+            context.json(mapper.writeValueAsString(registeredAccount));
+        }
+        else {
+            context.status(400);
+        }
     }
+
+    /**
+     * Handler to log in Account - End point for new account registration
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
+    private void postAccountLogInHandler(Context context) throws JsonProcessingException {
+        
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(context.body(), Account.class);
+        Account accfromDatabase = accountService.loginAccount(account);
+        if (accfromDatabase != null) {
+            context.json(mapper.writeValueAsString(accfromDatabase)).status(200);
+        }
+        else {
+            context.status(401);
+        }
+    }
+
+    /**
+     * Handler to get all message - End point to retrieve all messages
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
+    private void getMessagesHandler(Context context) throws JsonProcessingException {
+        List<Message> messages = messageService.getAllMessages();
+        context.json(messages);
+    }
+
+    /**
+     * Handler to post new message - End point to create new messages
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
+    private void postMessageHandler(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(), Message.class);
+        Account accfromDatabase = accountService.getAccountById(message.getPosted_by());
+        if (accfromDatabase != null) {
+            Message newMessage = messageService.insertMessage(message);
+            if (newMessage != null) {
+                context.json(mapper.writeValueAsString(newMessage));
+            }
+            else {
+                context.status(400);
+            }
+        }
+        else {
+            context.status(400);
+        }
+    }
+    
+
+
 
 
 }
