@@ -38,7 +38,10 @@ public class SocialMediaController {
         app.post("/register", this::postAccountHandler);    
         app.post("/login", this::postAccountLogInHandler);
         app.post("/messages", this::postMessageHandler);
-        app.get("messages", this::getMessagesHandler);
+        app.get("/messages", this::getMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::getMessageByIdHandler);
+        //app.update("messages/{message_id}, ")
         return app;
     }
 
@@ -119,7 +122,34 @@ public class SocialMediaController {
         else {
             context.status(400);
         }
+
     }
+
+    private void getMessageByIdHandler(Context context) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(context.pathParam("message_id"));
+        Message messagefromDatabase = messageService.getMessageById(message_id);
+        if (messagefromDatabase != null) {
+            context.json(mapper.writeValueAsString(messagefromDatabase));
+        }
+        else {
+            context.status(200);
+        }    
+    }
+    private void deleteMessageByIdHandler(Context context) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        int message_id = Integer.parseInt(context.pathParam("message_id"));
+        Message messagefromDatabase = messageService.getMessageById(message_id);
+        if (messagefromDatabase != null) {
+            messageService.deleteMesssageById(message_id);
+            context.json(mapper.writeValueAsString(messagefromDatabase));
+        }
+        else {
+            context.status(200);
+        }    
+    }
+
+    
     
 
 
