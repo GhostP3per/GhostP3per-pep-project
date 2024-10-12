@@ -15,8 +15,10 @@ public class AccountService {
     }
     
     /**
-     * TODO: Use the accountDAO to register an account to the database.
+     * Use the accountDAO to register an account to the database.
+     * 
      * @param account an account object.
+     * 
      * @return account if it was successfully persisted, null if any of these codition fails: 
      * username not blank
      * password is at least 4 characters long
@@ -33,6 +35,14 @@ public class AccountService {
         return null;
     }
 
+    /**
+     * Use the accountDAO to verify login info with existing account from database.
+     * 
+     * @param account an account object.
+     * 
+     * @return account if username and password provided in request body
+     * JSON match a real acocunt existing on the database
+     */
     public Account loginAccount(Account account) { 
         if (account.getUsername().length() > 0) {
             Account accfromDatabase = accountDAO.getAccountByUsername(account.getUsername());
@@ -44,6 +54,15 @@ public class AccountService {
         }
         return null;
     }
+
+    /**
+     * Use the accountDAO to get an account object from database.
+     * 
+     * @param account_id - an integer representing the account_id of the account that we want
+     * to retrieve from the database.
+     * 
+     * @return accfromDatabase - account object that matched the account_id from the database
+     */
     public Account getAccountById(int account_id) {
         Account accfromDatabase = accountDAO.getAccountById(account_id);
         return accfromDatabase;

@@ -12,6 +12,13 @@ import java.sql.Statement;
 
 public class MessageDAO {
 
+    /**
+     * Get all messages
+     * 
+     * @param none
+     * 
+     * @return messages - a list of Message objects
+     */
     public List<Message> getAllMessages() {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
@@ -33,6 +40,15 @@ public class MessageDAO {
         return messages;
     }
 
+    /**
+     * Insert new message into database
+     * 
+     * @param message - a message object, with all propertys of a message that 
+     * we want to insert into the database
+     * 
+     * @return - new message object representing the new message that 
+     * was inserted into the database
+     */
     public Message insertMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -59,6 +75,15 @@ public class MessageDAO {
         return null;
     }
 
+    /**
+     * Get message by message_id
+     * 
+     * @param message_id - an integer representing message id of the
+     * message that we want to retrieve from the database
+     * 
+     * @return message - a message object of the message that we want
+     * to retrieve from the database based on message_id
+     */
     public Message getMesssageById(int message_id){
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -82,6 +107,14 @@ public class MessageDAO {
         return null;
     }
 
+    /**
+     * Delete a message by message_id
+     * 
+     * @param message_id - an integer representing the message_id of the 
+     * message that we want to delete
+     * 
+     * @return none
+     */
     public void deleteMesssageById(int message_id){
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -97,6 +130,17 @@ public class MessageDAO {
         }
     }
 
+    /**
+     * Update message by message_id
+     * 
+     * @param message_id - an integer representing the message_id of the message
+     * that we want to update
+     * 
+     * @param message_text - a string represent the replacement text of the message
+     * that we want to update
+     * 
+     * @return none
+     */
     public void updateMesssageById(int message_id, String message_text){
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -115,6 +159,16 @@ public class MessageDAO {
             System.out.println(e.getMessage());
         }
     }
+
+    /**
+     * Get all message by account_id
+     * 
+     * @param account_id - an integer representing the account_id that 
+     * we need to get all the messages of
+     * 
+     * @return messages - a list of Message objects, representing all the messages
+     * posted by one specific account with the given account_id
+     */
     public List<Message> getAllMessagesByAccountId(int account_id) {
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();

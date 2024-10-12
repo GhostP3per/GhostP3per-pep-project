@@ -47,15 +47,6 @@ public class SocialMediaController {
     }
 
     /**
-     * This is an example handler for an example endpoint.
-     * @param context The Javalin Context object manages information about both the HTTP request and response.
-     */
-    private void exampleHandler(Context context) {
-        context.json("sample text");
-    }
-
-
-    /**
      * Handler to register new Account - End point for new account registration
      * 
      * @param context The Javalin Context object manages information about both the HTTP request and response.
@@ -75,7 +66,7 @@ public class SocialMediaController {
     }
 
     /**
-     * Handler to log in Account - End point for new account registration
+     * Handler to log in Account - End point for log in
      * 
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
@@ -126,6 +117,11 @@ public class SocialMediaController {
 
     }
 
+    /**
+     * Handler to post get message by message_id - End point to get message by message_id
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
     private void getMessageByIdHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         int message_id = Integer.parseInt(context.pathParam("message_id"));
@@ -137,6 +133,12 @@ public class SocialMediaController {
             context.status(200);
         }    
     }
+
+    /**
+     * Handler to delete message by message_id - End point to delete message
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
     private void deleteMessageByIdHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         int message_id = Integer.parseInt(context.pathParam("message_id"));
@@ -149,6 +151,12 @@ public class SocialMediaController {
             context.status(200);
         }    
     }
+
+    /**
+     * Handler to update message using message id - End point to update messages
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
     private void updateMessageByIdHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(context.body(), Message.class);
@@ -166,6 +174,12 @@ public class SocialMediaController {
         }
         
     }
+
+    /**
+     * Handler to get all message by account_id (posted_id) - End point to get all message by account_id
+     * 
+     * @param context The Javalin Context object manages information about both the HTTP request and response.
+     */
     private void getAllMessagesByAccountIdHandler(Context context) throws JsonProcessingException {
         int account_id = Integer.parseInt(context.pathParam("account_id"));
         List<Message> messages = messageService.getAllMessagesByAccountId(account_id);
